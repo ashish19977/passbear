@@ -38,7 +38,7 @@ export function CopyButton({ value, onCopied, className }: CopyButtonProps) {
       whileHover={reduceMotion || !value ? undefined : { scale: 1.02 }}
       whileTap={reduceMotion || !value ? undefined : { scale: 0.96 }}
       className={
-        'inline-flex items-center justify-center gap-2 rounded-xl border border-honey-200 bg-white px-4 py-3 font-medium text-honey-900 shadow-sm transition hover:bg-honey-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-500 disabled:cursor-not-allowed disabled:opacity-50 ' +
+        'inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-honey-200 bg-white px-4 py-3 font-medium text-honey-900 shadow-sm transition hover:bg-honey-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-500 disabled:cursor-not-allowed disabled:opacity-50 ' +
         (className ?? '')
       }
     >

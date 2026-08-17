@@ -96,6 +96,29 @@ test.describe('PassBear', () => {
     await expect(page.getByRole('heading', { name: 'Contact' })).toBeVisible()
   })
 
+  test('remember my settings persists the generator type across reloads', async ({
+    page,
+  }) => {
+    await page.getByRole('radio', { name: 'PIN' }).click()
+    await page.getByRole('button', { name: 'Remember my settings' }).click()
+    await expect(
+      page.getByRole('button', { name: 'Settings remembered' }),
+    ).toBeVisible()
+
+    await page.reload()
+    await expect(page.getByRole('radio', { name: 'PIN' })).toHaveAttribute(
+      'aria-checked',
+      'true',
+    )
+
+    // Turning it off clears the stored preference.
+    await page.getByRole('button', { name: 'Settings remembered' }).click()
+    const stored = await page.evaluate(() =>
+      window.localStorage.getItem('passbear:preferences:v1'),
+    )
+    expect(stored).toBeNull()
+  })
+
   test('advanced prefix and suffix apply to the password', async ({ page }) => {
     await page.getByRole('button', { name: 'Advanced settings' }).click()
     await page.getByLabel('Starts with').fill('My')

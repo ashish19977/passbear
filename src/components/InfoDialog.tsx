@@ -42,7 +42,7 @@ export function InfoDialog({ open, title, onClose, children }: InfoDialogProps) 
           type="button"
           onClick={onClose}
           aria-label="Close dialog"
-          className="rounded-lg p-1.5 text-slate-500 transition hover:bg-honey-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-500"
+          className="cursor-pointer rounded-lg p-1.5 text-slate-500 transition hover:bg-honey-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-500"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path

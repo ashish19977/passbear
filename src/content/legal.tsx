@@ -16,6 +16,14 @@ export function PrivacyContent() {
         Generated passwords are never transmitted, logged, or stored — not in
         localStorage, sessionStorage, cookies, IndexedDB, or on any server.
       </p>
+      <p className={heading}>&ldquo;Remember my settings&rdquo;</p>
+      <p>
+        If you turn this on, your chosen generator type and options (e.g. word
+        count, length, separators, symbols) are saved in your browser&apos;s
+        local storage so they&apos;re restored on your next visit. This only
+        ever stores configuration — never a generated password. Turning the
+        toggle off immediately removes this data from your device.
+      </p>
       <p className={heading}>Analytics</p>
       <p>
         This site does not include third-party analytics or advertising. If
