@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://passbear.app/sitemap.xml
+Sitemap: https://passbear.in/sitemap.xml
