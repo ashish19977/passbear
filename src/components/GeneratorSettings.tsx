@@ -251,7 +251,7 @@ function Toggle({ label, checked, onChange }: ToggleProps) {
         aria-label={label}
         onClick={() => onChange(!checked)}
         className={
-          'relative h-6 w-11 shrink-0 rounded-full transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-500 ' +
+          'relative h-6 w-11 shrink-0 cursor-pointer rounded-full transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-500 ' +
           (checked ? 'bg-teal-500' : 'bg-slate-300')
         }
       >
@@ -340,7 +340,7 @@ function SegmentedButton({
       aria-pressed={active}
       onClick={onClick}
       className={
-        'flex-1 rounded-lg px-2 py-1.5 text-sm font-medium transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-500 ' +
+        'flex-1 cursor-pointer rounded-lg px-2 py-1.5 text-sm font-medium transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-500 ' +
         (active
           ? 'bg-teal-500 text-white'
           : 'text-slate-600 hover:bg-honey-50')

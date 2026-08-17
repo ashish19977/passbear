@@ -7,7 +7,7 @@ export const SITE = {
   name: 'PassBear',
   tagline: 'Friendly passwords. Serious security, created locally.',
   url: 'https://passbear.in',
-  contactEmail: 'hello@passbear.app',
-  githubUrl: 'https://github.com/passbear/passbear',
+  contactEmail: 'coming soon',
+  githubUrl: 'https://github.com/ashish19977/passbear',
   developer: 'The PassBear team',
 } as const

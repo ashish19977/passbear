@@ -54,7 +54,7 @@ export function GeneratorTypeSelector({
             onKeyDown={(e) => handleKeyDown(e, index)}
             whileTap={reduceMotion ? undefined : { scale: 0.95 }}
             className={
-              'relative overflow-hidden rounded-xl border px-3 py-3 text-sm font-medium transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-500 ' +
+              'relative cursor-pointer overflow-hidden rounded-xl border px-3 py-3 text-sm font-medium transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-500 ' +
               (selected
                 ? 'border-teal-500 text-white shadow-sm'
                 : 'border-honey-200 bg-white text-slate-700 hover:border-honey-300 hover:bg-honey-50')

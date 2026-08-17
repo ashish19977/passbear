@@ -19,6 +19,7 @@ import {
 import {
   DEFAULT_OPTIONS,
   GENERATOR_META,
+  GENERATOR_TYPES,
   generatePassword,
 } from './generators'
 import {
@@ -33,20 +34,44 @@ import type {
   GeneratorType,
 } from './types/generator'
 import { classifyStrength, estimateTextEntropy } from './utils/entropy'
+import {
+  clearPreferences,
+  loadPreferences,
+  savePreferences,
+  sanitizeLike,
+} from './utils/preferences'
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 16 },
   show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } },
 } as const
 
+/** Merge stored preferences over the current defaults, tolerating drift from older saved shapes. */
+function resolveInitialState(stored: ReturnType<typeof loadPreferences>) {
+  const type: GeneratorType =
+    stored && GENERATOR_TYPES.includes(stored.type) ? stored.type : 'friendly'
+  const optionsMap: GeneratorOptionsMap = {
+    friendly: sanitizeLike(DEFAULT_OPTIONS.friendly, stored?.optionsMap?.friendly),
+    memorable: sanitizeLike(DEFAULT_OPTIONS.memorable, stored?.optionsMap?.memorable),
+    passphrase: sanitizeLike(DEFAULT_OPTIONS.passphrase, stored?.optionsMap?.passphrase),
+    random: sanitizeLike(DEFAULT_OPTIONS.random, stored?.optionsMap?.random),
+    pin: sanitizeLike(DEFAULT_OPTIONS.pin, stored?.optionsMap?.pin),
+  }
+  const advanced = sanitizeLike(DEFAULT_ADVANCED, stored?.advanced)
+  return { type, optionsMap, advanced }
+}
+
 function App() {
-  const [type, setType] = useState<GeneratorType>('friendly')
-  const [optionsMap, setOptionsMap] =
-    useState<GeneratorOptionsMap>(DEFAULT_OPTIONS)
-  const [base, setBase] = useState<GeneratedPassword>(() =>
-    generatePassword('friendly', DEFAULT_OPTIONS.friendly),
+  const initial = useMemo(() => resolveInitialState(loadPreferences()), [])
+  const [type, setType] = useState<GeneratorType>(initial.type)
+  const [optionsMap, setOptionsMap] = useState<GeneratorOptionsMap>(
+    initial.optionsMap,
   )
-  const [advanced, setAdvanced] = useState<AdvancedOptions>(DEFAULT_ADVANCED)
+  const [base, setBase] = useState<GeneratedPassword>(() =>
+    generatePassword(initial.type, initial.optionsMap[initial.type]),
+  )
+  const [advanced, setAdvanced] = useState<AdvancedOptions>(initial.advanced)
+  const [remember, setRemember] = useState(() => loadPreferences() !== null)
   const [editing, setEditing] = useState(false)
   const [editText, setEditText] = useState('')
   const [bearState, setBearState] = useState<BearState>('idle')
@@ -76,6 +101,21 @@ function App() {
   }
 
   useEffect(() => clearBearTimer, [])
+
+  // While enabled, keep the saved preferences in sync with live changes.
+  // Only configuration is persisted here — never a generated password.
+  useEffect(() => {
+    if (remember) savePreferences({ type, optionsMap, advanced })
+  }, [remember, type, optionsMap, advanced])
+
+  const toggleRemember = () => {
+    setRemember((prev) => {
+      const next = !prev
+      if (next) savePreferences({ type, optionsMap, advanced })
+      else clearPreferences()
+      return next
+    })
+  }
 
   const settleBear = useCallback((entropyBits: number) => {
     const label = classifyStrength(entropyBits).label
@@ -173,6 +213,7 @@ function App() {
           className="mt-2 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl"
         >
           Pass<span className="text-honey-500">Bear</span>
+          <span className="sr-only"> — Friendly Password Generator</span>
         </motion.h1>
         <motion.p
           initial={{ opacity: 0, y: 8 }}
@@ -217,7 +258,7 @@ function App() {
               onClick={handleGenerate}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.97 }}
-              className="flex flex-[1.4] items-center justify-center gap-2 rounded-xl bg-teal-600 px-5 py-3 font-semibold text-white shadow-sm transition hover:bg-teal-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-500"
+              className="flex flex-[1.4] cursor-pointer items-center justify-center gap-2 rounded-xl bg-teal-600 px-5 py-3 font-semibold text-white shadow-sm transition hover:bg-teal-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-500"
             >
               <motion.svg
                 width="18"
@@ -239,14 +280,27 @@ function App() {
               Generate
             </motion.button>
           </div>
-          <div className="flex justify-end">
+          <div className="flex flex-wrap items-center justify-end gap-3">
             <button
               type="button"
               onClick={toggleEdit}
               aria-pressed={editing}
-              className="text-sm font-medium text-slate-500 underline underline-offset-2 transition hover:text-teal-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-500"
+              className="text-sm font-medium text-slate-500 underline underline-offset-2 transition hover:text-teal-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-500 cursor-pointer"
             >
               {editing ? 'Done editing' : 'Edit password'}
+            </button>
+            <button
+              type="button"
+              onClick={toggleRemember}
+              aria-pressed={remember}
+              className={
+                'cursor-pointer text-sm font-medium underline underline-offset-2 transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-500 ' +
+                (remember
+                  ? 'text-teal-700 hover:text-teal-800'
+                  : 'text-slate-500 hover:text-teal-700')
+              }
+            >
+              {remember ? 'Settings remembered' : 'Remember my settings'}
             </button>
           </div>
           <StrengthIndicator strength={strength} estimated={estimated} />
@@ -340,7 +394,7 @@ function App() {
               <button
                 type="button"
                 onClick={() => setDialog('privacy')}
-                className="text-slate-500 underline underline-offset-2 transition hover:text-teal-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-500"
+                className="cursor-pointer text-slate-500 underline underline-offset-2 transition hover:text-teal-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-500"
               >
                 Privacy
               </button>
@@ -349,7 +403,7 @@ function App() {
               <button
                 type="button"
                 onClick={() => setDialog('terms')}
-                className="text-slate-500 underline underline-offset-2 transition hover:text-teal-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-500"
+                className="cursor-pointer text-slate-500 underline underline-offset-2 transition hover:text-teal-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-500"
               >
                 Terms &amp; Conditions
               </button>
@@ -358,7 +412,7 @@ function App() {
               <button
                 type="button"
                 onClick={() => setDialog('contact')}
-                className="text-slate-500 underline underline-offset-2 transition hover:text-teal-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-500"
+                className="cursor-pointer text-slate-500 underline underline-offset-2 transition hover:text-teal-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-500"
               >
                 Contact
               </button>

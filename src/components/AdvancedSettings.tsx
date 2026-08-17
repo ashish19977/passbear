@@ -36,7 +36,7 @@ export function AdvancedSettings({
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-controls={panelId}
-        className="flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-sm font-semibold text-slate-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-500"
+        className="flex w-full cursor-pointer items-center justify-between rounded-xl px-4 py-3 text-left text-sm font-semibold text-slate-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-500"
       >
         Advanced settings
         <motion.svg
@@ -117,7 +117,7 @@ export function AdvancedSettings({
                     aria-label="Insert a fixed character"
                     onClick={() => onChange({ fixedEnabled: !options.fixedEnabled })}
                     className={
-                      'relative h-6 w-11 shrink-0 rounded-full transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-500 ' +
+                      'relative h-6 w-11 shrink-0 cursor-pointer rounded-full transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-500 ' +
                       (options.fixedEnabled ? 'bg-teal-500' : 'bg-slate-300')
                     }
                   >
