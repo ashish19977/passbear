@@ -1,0 +1,65 @@
+@import 'tailwindcss';
+
+/*
+  PassBear theme — warm, trustworthy, minimal.
+  Honey/amber tones for the bear mascot paired with a calm teal for
+  security-forward actions.
+*/
+@theme {
+  --font-sans: 'Inter', system-ui, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  --color-honey-50: #fffaf0;
+  --color-honey-100: #fef3d9;
+  --color-honey-200: #fde3ad;
+  --color-honey-300: #fbcd77;
+  --color-honey-400: #f8b13f;
+  --color-honey-500: #f0961a;
+  --color-honey-600: #d67910;
+  --color-honey-700: #b25a11;
+  --color-honey-800: #904815;
+  --color-honey-900: #763c15;
+
+  --color-teal-50: #eefdf9;
+  --color-teal-100: #d4faf0;
+  --color-teal-200: #adf2e0;
+  --color-teal-300: #75e5cc;
+  --color-teal-400: #38cfb2;
+  --color-teal-500: #14b39a;
+  --color-teal-600: #0a917e;
+  --color-teal-700: #0c7466;
+  --color-teal-800: #0d5c53;
+  --color-teal-900: #104c45;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(1200px 600px at 50% -10%, var(--color-honey-100), transparent 60%),
+    linear-gradient(180deg, var(--color-honey-50), #ffffff 40%);
+  color: #1f2430;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Respect users who prefer reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
