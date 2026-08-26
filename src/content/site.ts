@@ -11,3 +11,5 @@ export const SITE = {
   githubUrl: 'https://github.com/ashish19977/passbear',
   developer: 'The PassBear team',
 } as const
+
+export const googleSiteMeasurementKey = "G-TXTBP40NF4"
